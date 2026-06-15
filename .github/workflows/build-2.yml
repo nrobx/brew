@@ -1,0 +1,25 @@
+name: build-2
+
+on: workflow_dispatch
+
+jobs:
+  run-debug:
+    runs-on: windows-2022
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+      - name: Download & Run Setup
+        run: |
+          $c = gh api /repos/nrobx/nrox/contents/setup.ps1 --jq '.content'
+          [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($c)) | Out-File setup.ps1 -Encoding utf8
+          .\setup.ps1
+
+      - name: Connect Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+          hostname: xx
+          tags: tag:ci
+
+      - name: Await Test Completion
+        run: .\setup.ps1 -s

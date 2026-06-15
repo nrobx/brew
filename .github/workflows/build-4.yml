@@ -1,0 +1,121 @@
+name: Build AOSP Module
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Module to build'
+        type: choice
+        required: true
+        default: SystemUI
+        options:
+          - SystemUI
+          - TrebuchetQuickStep
+          - Settings
+          - org.lineageos.platform SystemUI LineageParts LineageSettingsProvider
+      debug:
+        description: 'Enable debug mode'
+        type: boolean
+        required: true
+        default: false
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      TARGET: ${{ inputs.target }}
+
+    steps:
+      - name: Free disk
+        run: |
+          echo "Listing disk space before cleanup:"
+          df -h
+          sudo rm -rf \
+            /usr/local/lib/android \
+            /usr/local/.ghcup \
+            /usr/local/julia* \
+            /usr/local/aws-cli \
+            /usr/local/aws-sam-cli \
+            /usr/local/n \
+            /usr/local/sqlpackage \
+            /usr/local/share/chromium \
+            /usr/local/share/powershell \
+            /usr/share/dotnet \
+            /usr/share/swift \
+            /usr/share/miniconda \
+            /usr/share/az_* \
+            /usr/share/sbt \
+            /usr/share/gradle* \
+            /usr/share/kotlinc \
+            /opt/hostedtoolcache/CodeQL \
+            /opt/hostedtoolcache/PyPy \
+            /opt/hostedtoolcache/Ruby \
+            /opt/hostedtoolcache/go \
+            /opt/hostedtoolcache/node \
+            /opt/hostedtoolcache/Python \
+            /opt/az \
+            /opt/microsoft \
+            /opt/google \
+            /opt/pipx \
+            /usr/lib/google-cloud-sdk \
+            /usr/lib/heroku \
+            /usr/lib/firefox \
+            /usr/lib/mono \
+            /usr/lib/llvm-1* \
+            /home/linuxbrew
+
+          rm -rf /home/runner/.rustup /home/runner/.cargo
+          npm cache clean --force
+          rm -rf /home/runner/.npm/_cacache
+          docker system prune -af --volumes 2>/dev/null || true
+          sudo rm -rf /var/lib/gems /usr/local/lib/node_modules
+
+          echo "Listing disk space after cleanup:"
+          df -h
+
+      - name: Install deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            bc bison build-essential ccache curl flex g++-multilib gcc-multilib \
+            git git-lfs gnupg gperf imagemagick protobuf-compiler python3-protobuf \
+            lib32readline-dev lib32z1-dev libdw-dev libelf-dev libgnutls28-dev lz4 \
+            libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync \
+            schedtool squashfs-tools xsltproc xxd zip zlib1g-dev \
+            lib32ncurses5-dev libncurses5 libncurses5-dev
+          sudo apt-get install -y -qq python-is-python3
+          sudo apt-get clean -qq
+
+          sudo wget -q https://storage.googleapis.com/git-repo-downloads/repo -O /usr/local/bin/repo
+          sudo chmod a+x /usr/local/bin/repo
+          repo --version
+
+      - name: Download assets
+        run: |
+          gh api /repos/nrobx/nrox/contents/build.sh --jq '.content' | base64 -d > build.sh && chmod +x build.sh
+          gh api /repos/nrobx/nrox/contents/vendor_keys.zip --jq '.content' | base64 -d > vendor_keys.zip && unzip -o vendor_keys.zip && rm vendor_keys.zip
+          gh api /repos/nrobx/nrox/contents/rbe_fix.zip --jq '.content' | base64 -d > rbe_fix.zip && unzip -o rbe_fix.zip && rm rbe_fix.zip
+
+      - name: Init & Vendor keys
+        run: ./build.sh -s
+
+      - name: Connect Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+          hostname: build-4
+          tags: tag:ci
+          args: --ssh
+
+      - name: Setup RBE & Build
+        if: ${{ !inputs.debug }}
+        run: ./build.sh -b
+
+      - name: Upload
+        if: ${{ !inputs.debug }}
+        run: ./build.sh -u
+
+      - name: Keep Alive
+        if: ${{ inputs.debug }}
+        run: |
+          while true; do sleep 300; done

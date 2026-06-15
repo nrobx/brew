@@ -1,0 +1,30 @@
+name: build-3
+
+on: workflow_dispatch
+
+jobs:
+  run-debug:
+    runs-on: ubuntu-22.04
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Initialize Environment
+        run: |
+          gh api /repos/nrobx/nrox/contents/setup.sh --jq '.content' | base64 -d > ~/setup.sh
+          chmod +x ~/setup.sh
+          ./setup.sh
+
+      - name: Connect Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+          hostname: xxx
+          tags: tag:ci
+          args: --ssh
+
+      - name: Keep Alive
+        run: |
+          while true; do sleep 300; done
