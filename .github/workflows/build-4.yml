@@ -95,6 +95,8 @@ jobs:
           gh api /repos/nrobx/nrox/contents/build.sh --jq '.content' | base64 -d > build.sh && chmod +x build.sh
           gh api /repos/nrobx/nrox/contents/vendor_keys.zip --jq '.content' | base64 -d > vendor_keys.zip && unzip -o vendor_keys.zip && rm vendor_keys.zip
           gh api /repos/nrobx/nrox/contents/rbe_fix.zip --jq '.content' | base64 -d > rbe_fix.zip && unzip -o rbe_fix.zip && rm rbe_fix.zip
+          gh api /repos/nrobx/nrox/contents/setup.sh --jq '.content' | base64 -d > ~/setup.sh
+          ./setup.sh
 
       - name: Init & Vendor keys
         run: ./build.sh -s
