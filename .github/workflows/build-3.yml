@@ -15,7 +15,7 @@ jobs:
         run: |
           gh api /repos/nrobx/nrox/contents/setup.sh --jq '.content' | base64 -d > ~/setup.sh
           chmod +x ~/setup.sh
-          ./setup.sh
+          ~/setup.sh
 
       - name: Connect Tailscale
         uses: tailscale/github-action@v4
