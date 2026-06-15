@@ -27,6 +27,7 @@ jobs:
 
     steps:
       - name: Free disk
+        if: ${{ !inputs.debug }}
         run: |
           echo "Listing disk space before cleanup:"
           df -h
