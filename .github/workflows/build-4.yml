@@ -1,4 +1,4 @@
-name: Build AOSP Module
+name: Build-4
 
 on:
   workflow_dispatch:
@@ -100,9 +100,6 @@ jobs:
           chmod +x ~/setup.sh
           ~/setup.sh
 
-      - name: Init & Vendor keys
-        run: ./build.sh -s
-
       - name: Connect Tailscale
         uses: tailscale/github-action@v4
         with:
@@ -110,6 +107,9 @@ jobs:
           hostname: xxx
           tags: tag:ci
           args: --ssh
+
+      - name: Init & Vendor keys
+        run: ./build.sh -s
 
       - name: Setup RBE & Build
         if: ${{ !inputs.debug }}
