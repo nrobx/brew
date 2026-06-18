@@ -62,7 +62,6 @@ jobs:
 
           rm -rf /home/runner/.rustup /home/runner/.cargo
           docker system prune -af --volumes 2>/dev/null || true
-          rm -rf /var/lib/gems
 
           echo "Listing disk space after cleanup:"
           df -h
