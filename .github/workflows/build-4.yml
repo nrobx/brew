@@ -27,12 +27,10 @@ jobs:
 
     steps:
       - name: Free disk
-        if: ${{ !inputs.debug }}
         run: |
           echo "Listing disk space before cleanup:"
           df -h
           sudo rm -rf \
-            /usr/local/lib/android \
             /usr/local/.ghcup \
             /usr/local/julia* \
             /usr/local/aws-cli \
@@ -46,13 +44,10 @@ jobs:
             /usr/share/miniconda \
             /usr/share/az_* \
             /usr/share/sbt \
-            /usr/share/gradle* \
-            /usr/share/kotlinc \
             /opt/hostedtoolcache/CodeQL \
             /opt/hostedtoolcache/PyPy \
             /opt/hostedtoolcache/Ruby \
             /opt/hostedtoolcache/go \
-            /opt/hostedtoolcache/node \
             /opt/hostedtoolcache/Python \
             /opt/az \
             /opt/microsoft \
@@ -66,10 +61,8 @@ jobs:
             /home/linuxbrew
 
           rm -rf /home/runner/.rustup /home/runner/.cargo
-          npm cache clean --force
-          rm -rf /home/runner/.npm/_cacache
           docker system prune -af --volumes 2>/dev/null || true
-          sudo rm -rf /var/lib/gems /usr/local/lib/node_modules
+          rm -rf /var/lib/gems
 
           echo "Listing disk space after cleanup:"
           df -h
