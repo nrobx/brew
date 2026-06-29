@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   run-debug:
-    runs-on: windows-latest
+    runs-on: macos-latest
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
