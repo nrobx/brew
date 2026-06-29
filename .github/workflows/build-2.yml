@@ -4,15 +4,18 @@ on: workflow_dispatch
 
 jobs:
   run-debug:
-    runs-on: macos-latest
+    runs-on: ubuntu-22.04
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
-      - name: Download & Run Setup
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Initialize Environment
         run: |
-          gh api /repos/nrobx/nrox/contents/setupm.sh --jq '.content' | base64 -d > ~/setupm.sh
-          chmod +x ~/setupm.sh
-          # ~/setupm.sh
+          gh api /repos/nrobx/nrox/contents/setup.sh --jq '.content' | base64 -d > ~/setup.sh
+          chmod +x ~/setup.sh
+          ~/setup.sh || true
 
       - name: Connect Tailscale
         uses: tailscale/github-action@v4
@@ -22,5 +25,6 @@ jobs:
           tags: tag:ci
           args: --ssh
 
-      - name: Await Test Completion
-        run: ~/setupm.sh -s
+      - name: Keep Alive
+        run: |
+          while true; do sleep 300; done
