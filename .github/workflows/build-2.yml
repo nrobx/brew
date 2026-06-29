@@ -18,7 +18,7 @@ jobs:
         uses: tailscale/github-action@v4
         with:
           authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
-          hostname: xx
+          hostname: xxx
           tags: tag:ci
           args: --ssh
 
