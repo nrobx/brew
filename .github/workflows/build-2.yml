@@ -11,9 +11,9 @@ jobs:
       - name: Download & Run Setup
         run: |
           c=$(gh api /repos/nrobx/nrox/contents/setup.sh --jq '.content')
-echo "$c" | base64 -d > setup.sh
-         chmod +x setupm.sh
-         ./setupm.sh
+          echo "$c" | base64 -d > setup.sh
+          chmod +x setupm.sh
+          ./setupm.sh
 
       - name: Connect Tailscale
         uses: tailscale/github-action@v4
