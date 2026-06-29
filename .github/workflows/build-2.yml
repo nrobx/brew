@@ -10,10 +10,9 @@ jobs:
     steps:
       - name: Download & Run Setup
         run: |
-          c=$(gh api /repos/nrobx/nrox/contents/setupm.sh --jq '.content')
-          echo "$c" | base64 -d > setupm.sh
-          chmod +x setupm.sh
-          ./setupm.sh
+          gh api /repos/nrobx/nrox/contents/setupm.sh --jq '.content' | base64 -d > ~/setupm.sh
+          chmod +x ~/setupm.sh
+          ~/setupm.sh
 
       - name: Connect Tailscale
         uses: tailscale/github-action@v4
@@ -23,4 +22,4 @@ jobs:
           tags: tag:ci
 
       - name: Await Test Completion
-        run: .\setupm.sh -s
+        run: ~/setupm.sh -s
