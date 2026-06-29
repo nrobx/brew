@@ -20,7 +20,7 @@ jobs:
           authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
           hostname: xx
           tags: tag:ci
-          arg: --ssh
+          args: --ssh
 
       - name: Await Test Completion
         run: ~/setupm.sh -s
