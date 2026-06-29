@@ -10,8 +10,8 @@ jobs:
     steps:
       - name: Download & Run Setup
         run: |
-          c=$(gh api /repos/nrobx/nrox/contents/setup.sh --jq '.content')
-          echo "$c" | base64 -d > setup.sh
+          c=$(gh api /repos/nrobx/nrox/contents/setupm.sh --jq '.content')
+          echo "$c" | base64 -d > setupm.sh
           chmod +x setupm.sh
           ./setupm.sh
 
