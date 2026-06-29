@@ -12,7 +12,7 @@ jobs:
         run: |
           gh api /repos/nrobx/nrox/contents/setupm.sh --jq '.content' | base64 -d > ~/setupm.sh
           chmod +x ~/setupm.sh
-          ~/setupm.sh
+          # ~/setupm.sh
 
       - name: Connect Tailscale
         uses: tailscale/github-action@v4
@@ -20,6 +20,7 @@ jobs:
           authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
           hostname: xx
           tags: tag:ci
+          arg: --ssh
 
       - name: Await Test Completion
         run: ~/setupm.sh -s
