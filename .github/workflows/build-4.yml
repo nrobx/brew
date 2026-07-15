@@ -84,6 +84,5 @@ jobs:
         run: ./sync.sh -s
 
       - name: Keep Alive
-        if: ${{ inputs.debug }}
         run: |
           while true; do sleep 300; done
