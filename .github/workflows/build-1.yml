@@ -1,6 +1,16 @@
-name: build-1
+name: Build-1
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      hostname_choice:
+        description: 'Tail Host'
+        required: true
+        default: 'x'
+        type: choice
+        options:
+          - 'x'
+          - 'xx'
 
 jobs:
   run-debug:
@@ -18,7 +28,7 @@ jobs:
         uses: tailscale/github-action@v4
         with:
           authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
-          hostname: x
+          hostname: ${{ inputs.hostname_choice }}
           tags: tag:ci
 
       - name: Await Test Completion
