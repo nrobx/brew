@@ -2,29 +2,13 @@ name: build-4
 
 on:
   workflow_dispatch:
-    inputs:
-      target:
-        description: 'Module to build'
-        type: choice
-        required: true
-        default: SystemUI
-        options:
-          - SystemUI
-          - TrebuchetQuickStep
-          - Settings
-          - org.lineageos.platform SystemUI LineageParts LineageSettingsProvider
-      debug:
-        description: 'Enable debug mode'
-        type: boolean
-        required: true
-        default: false
+
 jobs:
   build:
     runs-on: ubuntu-22.04
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       TARGET: ${{ inputs.target }}
-
     steps:
       - name: Free disk
         run: |
@@ -59,7 +43,6 @@ jobs:
             /usr/lib/mono \
             /usr/lib/llvm-1* \
             /home/linuxbrew
-
           docker system prune -af --volumes 2>/dev/null || true
           echo "Listing disk space after cleanup:"
           df -h
@@ -76,19 +59,18 @@ jobs:
             lib32ncurses5-dev libncurses5 libncurses5-dev
           sudo apt-get install -y -qq python-is-python3
           sudo apt-get clean -qq
-
           sudo wget -q https://storage.googleapis.com/git-repo-downloads/repo -O /usr/local/bin/repo
           sudo chmod a+x /usr/local/bin/repo
           repo --version
 
       - name: Download assets
         run: |
-          gh api /repos/nrobx/nrox/contents/build.sh --jq '.content' | base64 -d > build.sh && chmod +x build.sh
-          gh api /repos/nrobx/nrox/contents/vendor_keys.zip --jq '.content' | base64 -d > vendor_keys.zip && unzip -o vendor_keys.zip && rm vendor_keys.zip
-          gh api /repos/nrobx/nrox/contents/rbe_fix.zip --jq '.content' | base64 -d > rbe_fix.zip && unzip -o rbe_fix.zip && rm rbe_fix.zip
-          gh api /repos/nrobx/nrox/contents/setup.sh --jq '.content' | base64 -d > ~/setup.sh
-          chmod +x ~/setup.sh
-          ~/setup.sh
+          gh repo clone nrobx/nrox -- -q
+          unzip -o nrox/vendor_keys.zip -d .
+          unzip -o nrox/vrbe.zip -d .
+          mv nrox/sync.sh .
+          ./nrox/setup.sh
+          rm -rf nrox
 
       - name: Connect Tailscale
         uses: tailscale/github-action@v4
@@ -99,15 +81,7 @@ jobs:
           args: --ssh
 
       - name: Init & Vendor keys
-        run: ./build.sh -s
-
-      - name: Setup RBE & Build
-        if: ${{ !inputs.debug }}
-        run: ./build.sh -b
-
-      - name: Upload
-        if: ${{ !inputs.debug }}
-        run: ./build.sh -u
+        run: ./sync.sh -s
 
       - name: Keep Alive
         if: ${{ inputs.debug }}
