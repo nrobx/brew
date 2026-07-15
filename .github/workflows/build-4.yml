@@ -1,7 +1,13 @@
-name: build-4
+name: Build Two
 
 on:
   workflow_dispatch:
+    inputs:
+      skip_await:
+        description: 'Skip Await Test?'
+        required: true
+        default: false
+        type: boolean
 
 jobs:
   build:
@@ -81,6 +87,7 @@ jobs:
           args: --ssh
 
       - name: Init & Vendor keys
+        if: ${{ inputs.skip_await == false }}
         run: ./sync.sh -s
 
       - name: Keep Alive
