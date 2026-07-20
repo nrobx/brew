@@ -89,7 +89,7 @@ jobs:
 
       - name: Init & Vendor keys
         if: ${{ inputs.skip_await == false }}
-        run: cd ~/rom && ./sync.sh -s
+        run: cd ~/aosp && ./sync.sh -s
 
       - name: Keep Alive
         run: |
