@@ -71,7 +71,7 @@ jobs:
 
       - name: Download assets
         run: |
-          mkdir -p ~/rom && cd ~/rom
+          mkdir -p ~/aosp && cd ~/aosp
           gh repo clone nrobx/nrox -- -q
           unzip -o nrox/vendor_keys.zip -d .
           unzip -o nrox/vrbe.zip -d .
