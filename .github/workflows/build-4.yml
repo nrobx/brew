@@ -71,6 +71,7 @@ jobs:
 
       - name: Download assets
         run: |
+          mkdir -p ~/rom && cd ~/rom
           gh repo clone nrobx/nrox -- -q
           unzip -o nrox/vendor_keys.zip -d .
           unzip -o nrox/vrbe.zip -d .
@@ -88,7 +89,7 @@ jobs:
 
       - name: Init & Vendor keys
         if: ${{ inputs.skip_await == false }}
-        run: ./sync.sh -s
+        run: cd ~/rom && ./sync.sh -s
 
       - name: Keep Alive
         run: |
