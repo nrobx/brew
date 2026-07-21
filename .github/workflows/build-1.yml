@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       hostname_choice:
-        description: 'Tail Host'
+        description: 'Tail'
         required: true
         default: 'x'
         type: choice
@@ -14,7 +14,7 @@ on:
 
 jobs:
   run-debug:
-    runs-on: windows-2022
+    runs-on: windows-latest
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
