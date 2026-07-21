@@ -14,7 +14,7 @@ on:
 
 jobs:
   run-debug:
-    runs-on: windows-2025
+    runs-on: windows-2022
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
