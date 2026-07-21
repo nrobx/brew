@@ -14,7 +14,7 @@ on:
 
 jobs:
   run-debug:
-    runs-on: windows-latest
+    runs-on: windows-11-arm
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
