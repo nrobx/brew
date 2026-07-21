@@ -5,7 +5,6 @@ on:
     inputs:
       hostname_choice:
         description: 'Tail'
-        required: true
         default: 'x'
         type: choice
         options:
@@ -13,7 +12,7 @@ on:
           - 'xx'
 
 jobs:
-  run-debug:
+  run-xx:
     runs-on: windows-2022
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
