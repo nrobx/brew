@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       skip_await:
-        description: 'Skip Await Test?'
-        required: true
+        description: 'Skip Sync'
         default: false
         type: boolean
 
