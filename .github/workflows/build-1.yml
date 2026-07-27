@@ -29,7 +29,6 @@ jobs:
           authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
           hostname: ${{ inputs.hostname_choice }}
           tags: tag:ci
-          args: --ssh
 
       - name: Await Test Completion
         run: .\setup.ps1 -s
