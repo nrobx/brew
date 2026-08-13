@@ -15,6 +15,15 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       TARGET: ${{ inputs.target }}
     steps:
+
+      - name: Connect Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+          hostname: xxx
+          tags: tag:ci
+          args: --ssh
+
       - name: Free disk
         run: |
           echo "Listing disk space before cleanup:"
@@ -74,14 +83,6 @@ jobs:
           mv nrox/sync.sh .
           ./nrox/setup.sh
           rm -rf nrox
-
-      - name: Connect Tailscale
-        uses: tailscale/github-action@v4
-        with:
-          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
-          hostname: xxx
-          tags: tag:ci
-          args: --ssh
 
       - name: Init & Vendor keys
         if: ${{ inputs.skip_await == false }}
