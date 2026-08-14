@@ -35,7 +35,6 @@ jobs:
             /usr/local/aws-sam-cli \
             /usr/local/n \
             /usr/local/sqlpackage \
-            /usr/local/share/chromium \
             /usr/local/share/powershell \
             /usr/share/dotnet \
             /usr/share/swift \
