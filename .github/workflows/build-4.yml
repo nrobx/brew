@@ -24,6 +24,14 @@ jobs:
           tags: tag:ci
           args: --ssh
 
+      - name: Download assets
+        run: |
+          mkdir -p ~/aosp
+          gh repo clone nrobx/nrox -- -q
+          cp -f nrox/sync.sh ~/aosp
+          bash nrox/setup.sh
+          rm -rf nrox
+
       - name: Free disk
         run: |
           echo "Listing disk space before cleanup:"
@@ -72,14 +80,6 @@ jobs:
           sudo wget -q https://storage.googleapis.com/git-repo-downloads/repo -O /usr/local/bin/repo
           sudo chmod a+x /usr/local/bin/repo
           repo --version
-
-      - name: Download assets
-        run: |
-          mkdir -p ~/aosp && cd ~/aosp
-          gh repo clone nrobx/nrox -- -q
-          mv nrox/sync.sh .
-          # ./nrox/setup.sh
-          rm -rf nrox
 
       - name: Init & Vendor keys
         if: ${{ inputs.skip_await == false }}
