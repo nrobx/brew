@@ -24,6 +24,22 @@ jobs:
           tags: tag:ci
           args: --ssh
 
+      - name: Install deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            bc bison build-essential ccache curl flex g++-multilib gcc-multilib \
+            git git-lfs gnupg gperf imagemagick protobuf-compiler python3-protobuf \
+            lib32readline-dev lib32z1-dev libdw-dev libelf-dev libgnutls28-dev lz4 \
+            libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync \
+            schedtool squashfs-tools xsltproc xxd zip zlib1g-dev \
+            lib32ncurses5-dev libncurses5 libncurses5-dev
+          sudo apt-get install -y -qq python-is-python3
+          sudo apt-get clean -qq
+          sudo wget -q https://storage.googleapis.com/git-repo-downloads/repo -O /usr/local/bin/repo
+          sudo chmod a+x /usr/local/bin/repo
+          repo --version
+
       - name: Download assets
         run: |
           mkdir -p ~/aosp
@@ -64,22 +80,6 @@ jobs:
           docker system prune -af --volumes 2>/dev/null || true
           echo "Listing disk space after cleanup:"
           df -h
-
-      - name: Install deps
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq \
-            bc bison build-essential ccache curl flex g++-multilib gcc-multilib \
-            git git-lfs gnupg gperf imagemagick protobuf-compiler python3-protobuf \
-            lib32readline-dev lib32z1-dev libdw-dev libelf-dev libgnutls28-dev lz4 \
-            libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync \
-            schedtool squashfs-tools xsltproc xxd zip zlib1g-dev \
-            lib32ncurses5-dev libncurses5 libncurses5-dev
-          sudo apt-get install -y -qq python-is-python3
-          sudo apt-get clean -qq
-          sudo wget -q https://storage.googleapis.com/git-repo-downloads/repo -O /usr/local/bin/repo
-          sudo chmod a+x /usr/local/bin/repo
-          repo --version
 
       - name: Init & Vendor keys
         if: ${{ inputs.skip_await == false }}
