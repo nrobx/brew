@@ -42,10 +42,9 @@ jobs:
 
       - name: Download assets
         run: |
-          mkdir -p ~/aosp
           gh repo clone nrobx/nrox -- -q
-          cp -f nrox/sync.sh ~/aosp
           bash nrox/setup.sh
+          mv nrox/sync.sh ~/sync.sh
           rm -rf nrox
 
       - name: Free disk
@@ -81,9 +80,11 @@ jobs:
           echo "Listing disk space after cleanup:"
           df -h
 
-      - name: Init & Vendor keys
+      - name: Init Sync
         if: ${{ inputs.skip_await == false }}
-        run: ./sync.sh -s && rm -rf ./sync.sh
+        run: |
+          bash ~/sync.sh
+          rm -rf ~/sync.sh
 
       - name: Keep Alive
         run: |
