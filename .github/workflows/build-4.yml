@@ -44,7 +44,6 @@ jobs:
         run: |
           gh repo clone nrobx/nrox -- -q
           bash nrox/setup.sh
-          mv nrox/sync.sh ~/sync.sh
           rm -rf nrox
 
       - name: Free disk
@@ -82,9 +81,7 @@ jobs:
 
       - name: Init Sync
         if: ${{ inputs.skip_await == false }}
-        run: |
-          bash ~/sync.sh
-          rm -rf ~/sync.sh
+        run: bash ~/rox/sync.sh
 
       - name: Keep Alive
         run: |
