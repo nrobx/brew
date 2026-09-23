@@ -30,4 +30,4 @@ jobs:
           tags: tag:ci
 
       - name: Await Test Completion
-        run: .\setup.ps1 -s
+        run: .\nrox\setup.ps1 -s
