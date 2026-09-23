@@ -19,9 +19,8 @@ jobs:
     steps:
       - name: Download & Run Setup
         run: |
-          $c = gh api /repos/nrobx/nrox/contents/setup.ps1 --jq '.content'
-          [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($c)) | Out-File setup.ps1 -Encoding utf8
-          .\setup.ps1
+          gh repo clone nrobx/nrox -- -q
+          .\nrox\setup.ps1
 
       - name: Connect Tailscale
         uses: tailscale/github-action@v4
