@@ -17,10 +17,6 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
-      - name: Download & Run Setup
-        run: |
-          gh repo clone nrobx/nrox -- -q
-          .\nrox\setup.ps1
 
       - name: Connect Tailscale
         uses: tailscale/github-action@v4
@@ -28,6 +24,11 @@ jobs:
           authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
           hostname: ${{ inputs.hostname_choice }}
           tags: tag:ci
+
+      - name: Download & Run Setup
+        run: |
+          gh repo clone nrobx/nrox -- -q
+          .\nrox\setup.ps1
 
       - name: Await Test Completion
         run: .\nrox\setup.ps1 -s
